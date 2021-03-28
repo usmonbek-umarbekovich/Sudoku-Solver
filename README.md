@@ -1,5 +1,5 @@
 # Sudoku-Solver
-Visualize Sudoku-Solver program using recursion and backtrack algorithm.
+Visualize Sudoku-Solver program using recursion and backtracking algorithm.
 
 What the program can do:
 <ul>
