@@ -2,7 +2,7 @@ import random
 
 
 def generate_board(*, level="easy"):
-  gen_range = (level == "easy") and (35, 50) or (50, 58)
+  gen_range = (level == "easy") and (35, 45) or (50, 60)
   board = [[0]*9 for _ in range(9)]
   board[0] = list(range(1, 10))
   random.shuffle(board[0])
