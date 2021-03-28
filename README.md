@@ -1,16 +1,6 @@
 # Sudoku-Solver
 Visualize Sudoku-Solver program using recursion and backtrack algorithm.
 
-<style>
-  ul {
-    list-style: none;
-  }
-
-  ul li:before {
-    content: '✓';
-  }
-</style>
-
 What the program can do:
 <ul>
   <li>It can generate random sudoku puzzles</li>
