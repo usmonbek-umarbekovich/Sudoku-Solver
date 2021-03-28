@@ -1,13 +1,15 @@
 # Sudoku-Solver
 Visualize Sudoku-Solver program using recursion and backtrack algorithm.
 
-ul {
-  list-style: none;
-}
+<style>
+  ul {
+    list-style: none;
+  }
 
-ul li:before {
-  content: '✓';
-}
+  ul li:before {
+    content: '✓';
+  }
+</style>
 
 What the program can do:
 <ul>
