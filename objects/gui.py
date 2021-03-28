@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox as msg
 from . import style
 from . import helpers
 from time import sleep
@@ -17,7 +18,7 @@ class Sudoku:
     frame = tk.Frame(self.window, bg="#f4f4f4")
     frame.pack(side=tk.TOP, expand=tk.YES)
     
-    self.generate_button = tk.Button(frame, text="Generate", **style.btn)
+    self.generate_button = tk.Button(frame, text="Generate", command=self.generate, **style.btn)
     self.generate_button.grid(ipadx=15, pady=6, row=0, column=0)
     
     self.run_button = tk.Button(frame, text="Solve", command=self.solve, **style.btn)
@@ -53,6 +54,8 @@ class Sudoku:
     
     self.is_operating = True
     self.draw_lines()
+    
+    self.board = helpers.generate_board()
     self.write_given_numbers()
     
     self.window.mainloop()
@@ -98,7 +101,7 @@ class Sudoku:
       x = self.step_x/2
       while x < self.width:
         r, c = round((y-self.step_y/2)/self.step_y), round((x-self.step_x/2)/self.step_x)
-        number = helpers.board[r][c] or ''
+        number = self.board[r][c] or ''
         self.text_ids[r][c] = self.canvas.create_text(x, y,
                                                       text=str(number),
                                                       anchor=tk.CENTER,
@@ -110,40 +113,49 @@ class Sudoku:
     self.is_operating = False
     
   def solve(self):
-    if not self.is_operating:
+    if not(self.is_operating or helpers.is_empty(self.board)):
       self.is_operating = True
       def _recursive():
-        pos = helpers.find_empty(helpers.board)
+        pos = helpers.find_empty(self.board)
         if not pos:
           return True
         else:
           row, col = pos
         
         for num in range(1, 10):
-          if helpers.is_valid(helpers.board, num, pos):
-            helpers.board[row][col] = num
+          if helpers.is_valid(self.board, num, pos):
+            self.board[row][col] = num
             self.canvas.itemconfigure(self.text_ids[row][col], text=str(num))
-            sleep(1 / self.speed.get() + 0.1)
+            sleep(1 / self.speed.get() + 0.01)
             self.canvas.update()
 
             if _recursive():
               return True
             
-            helpers.board[row][col] = 0
+            self.board[row][col] = 0
             self.canvas.itemconfigure(self.text_ids[row][col], text='')
-            sleep(1 / self.speed.get() + 0.1)
+            sleep(1 / self.speed.get() + 0.01)
             self.canvas.update()
         return False
       _recursive()
       self.is_operating = False
+    elif helpers.is_empty(self.board):
+      msg.showerror("Empty Box", "Please generate a board")
     
   def reset(self):
     if not self.is_operating:
       self.is_operating = True
-      helpers.board = [[0]*9 for _ in range(9)]
+      self.board = [[0]*9 for _ in range(9)]
       for r in range(9):
         for c in range(9):
           self.canvas.itemconfigure(self.text_ids[r][c], text='')
           sleep(0.02)
           self.canvas.update()
       self.is_operating = False
+  
+  
+  def generate(self):
+    if not self.is_operating:
+      self.reset()
+      self.board = helpers.generate_board()
+      self.write_given_numbers()

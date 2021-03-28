@@ -1,17 +1,36 @@
-board = [
-  [7, 8, 0, 4, 0, 0, 1, 2, 0],
-  [6, 0, 0, 0, 7, 5, 0, 0, 9],
-  [0, 0, 0, 6, 0, 1, 0, 7, 8],
-  [0, 0, 7, 0, 4, 0, 2, 6, 0],
-  [0, 0, 1, 0, 5, 0, 9, 3, 0],
-  [9, 0, 4, 0, 6, 0, 0, 0, 5],
-  [0, 7, 0, 3, 0, 0, 0, 1, 2],
-  [1, 2, 0, 0, 0, 7, 4, 0, 0],
-  [0, 4, 9, 2, 0, 6, 0, 0, 7]
-]
+import random
 
 
+def generate_board():
+  board = [[0]*9 for _ in range(9)]
+  board[0] = list(range(1, 10))
+  random.shuffle(board[0])
+  complete(board)
+  
+  count = random.randint(40, 60)
+  for _ in range(count):
+    r, c = random.randrange(9), random.randrange(9)
+    board[r][c] = 0
+  
+  return board
 
+
+def complete(board):
+  pos = find_empty(board)
+  if not pos:
+    return True
+
+  row, col = pos
+  for num in range(1, 10):
+    if is_valid(board, num, pos):
+      board[row][col] = num
+      
+      if complete(board):
+        return True
+
+      board[row][col] = 0
+  return False
+  
 
 def is_valid(board, num, pos):
   # check the row
@@ -41,3 +60,11 @@ def find_empty(board):
     for c in range(len(board[0])):
       if board[r][c] == 0:
         return (r, c)
+
+
+def is_empty(board):
+  for r in range(len(board)):
+    for c in range(len(board[0])):
+      if board[r][c]:
+        return False
+  return True
