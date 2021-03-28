@@ -143,7 +143,7 @@ class Sudoku:
       msg.showerror("Empty Box", "Please generate a board")
     
   def reset(self):
-    if not self.is_operating:
+    if not self.is_operating and helpers.is_empty(self.board):
       self.is_operating = True
       self.board = [[0]*9 for _ in range(9)]
       for r in range(9):
