@@ -15,6 +15,7 @@ class Sudoku:
     self.window.resizable(False, False)
     self.elapsed_time = 0
     self.is_operating = True
+    self.level = "easy"
     self.text_ids = [[0]*9 for _ in range(9)]
     
     menubar = tk.Menu(self.window)
@@ -77,10 +78,12 @@ class Sudoku:
     button.bind("<Leave>", lambda event, btn=button: self.on_leave(event, btn))
     
   def easy(self):
+    self.level = "easy"
     self.generate()
     
   def difficult(self):
-    self.generate(level="difficult")
+    self.level = "difficult"
+    self.generate()
     
   def draw_lines(self):
     self.is_operating = True 
@@ -171,8 +174,8 @@ class Sudoku:
       self.is_operating = False
   
   
-  def generate(self, *, level="easy"):
+  def generate(self):
     if not self.is_operating:
       self.reset()
-      self.board = helpers.generate_board(level=level)
+      self.board = helpers.generate_board(level=self.level)
       self.write_given_numbers()
