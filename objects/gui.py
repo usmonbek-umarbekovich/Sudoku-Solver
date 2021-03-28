@@ -123,7 +123,7 @@ class Sudoku:
           if helpers.is_valid(helpers.board, num, pos):
             helpers.board[row][col] = num
             self.canvas.itemconfigure(self.text_ids[row][col], text=str(num))
-            sleep(0.09)
+            sleep(1 / self.speed.get() + 0.1)
             self.canvas.update()
 
             if _recursive():
@@ -131,7 +131,7 @@ class Sudoku:
             
             helpers.board[row][col] = 0
             self.canvas.itemconfigure(self.text_ids[row][col], text='')
-            sleep(0.09)
+            sleep(1 / self.speed.get() + 0.1)
             self.canvas.update()
         return False
       _recursive()
