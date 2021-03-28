@@ -1,5 +1,14 @@
 import tkinter as tk
 
+canvas = {
+  'bg': "#ffffff",
+  'width': 520,
+  'height': 520,
+  'relief': tk.RIDGE,
+  'bd': 2,
+  'highlightthickness': 0
+}
+
 btn = {
   'bg': "#444444",
   'fg': "#ffffff",
@@ -9,11 +18,20 @@ btn = {
   'cursor': 'hand2'
 }
 
-canvas = {
-  'bg': "#ffffff",
-  'width': 550,
-  'height': 520,
-  'relief': tk.RIDGE,
-  'bd': 2,
-  'highlightthickness': 0
+scale = {
+  'orient': 'horizontal',
+  'cursor': "hand2",
+  'from_': 1,
+  'to': 100,
+  'troughcolor': "#14fa0c",
+  'showvalue': 0,
+  'bg': "#0e05ad",
+  'activebackground': "#0b048a",
+  'borderwidth': 0,
+  'sliderrelief': tk.RAISED
+}
+
+numbers = {
+  'anchor': tk.CENTER,
+  'font': "Arial 16"
 }

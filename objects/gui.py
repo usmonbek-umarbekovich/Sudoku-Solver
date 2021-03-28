@@ -12,10 +12,12 @@ class Sudoku:
     self.window.title("Sudoku Solver")
     self.window.protocol("WM_DELETE_WINDOW", self.kill_window)
     self.window.geometry("550x610")
+    self.window.resizable(False, False)
     self.elapsed_time = 0
     self.is_operating = True
+    self.text_ids = [[0]*9 for _ in range(9)]
     
-    menubar = tk.Menu(self.window, cursor="hand2")
+    menubar = tk.Menu(self.window)
     level = tk.Menu(menubar, tearoff=0)
     level.add_command(label="Easy", command=self.easy)
     level.add_command(label="Difficult", command=self.difficult)
@@ -24,41 +26,36 @@ class Sudoku:
 
     # canvas
     self.canvas = tk.Canvas(self.window, **style.canvas)
-    self.canvas.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.YES)
+    self.canvas.pack(side=tk.TOP, fill=tk.BOTH)
     self.canvas.update()
     self.width = self.canvas.winfo_width()
     self.height = self.canvas.winfo_height()
     self.step_x, self.step_y = self.width/9, self.height/9
 
     frame = tk.Frame(self.window, bg="#f4f4f4")
-    frame.pack(side=tk.TOP, expand=tk.YES)
+    frame.pack(side=tk.TOP)
     
     self.generate_button = tk.Button(frame, text="Generate", command=self.generate, **style.btn)
     self.generate_button.grid(ipadx=15, pady=6, row=0, column=0)
+    self.button_hover(self.generate_button)
     
     self.run_button = tk.Button(frame, text="Solve", command=self.solve, **style.btn)
     self.run_button.grid(ipadx=15, padx=30, pady=6, row=0, column=1)
-    self.run_button.bind("<Enter>", self.on_enter)
-    self.run_button.bind("<Leave>", self.on_leave)
-    # self.run_button.bind("<Return>", self.solve)
+    self.button_hover(self.run_button)
     
     self.reset_button = tk.Button(frame, text="Reset", command=self.reset, **style.btn)
     self.reset_button.grid(ipadx=15, pady=6, row=0, column=2)
+    self.button_hover(self.reset_button)
     
     var = tk.DoubleVar()
-    self.speed = tk.Scale(frame, variable=var, orient='horizontal',
-                          cursor="hand2", from_=1, to=100,
-                          troughcolor="#14fa0c", showvalue=0,
-                          bg="#0e05ad", activebackground="#0b048a",
-                          borderwidth=0, sliderrelief=tk.RAISED)
+    self.speed = tk.Scale(frame, variable=var, **style.scale)
     self.speed.grid(ipadx=80, row=1, column=0, columnspan=2)
     self.speed.set(50)
 
-    tk.Label(frame, text="Runtime:", font=("Arial", 13)).grid(row=1, column=2)
-    self.runtime = tk.Label(frame, text='00:00', font=("Arial", 13))
+    tk.Label(frame, text="Runtime:", font="Arial 13").grid(row=1, column=2)
+    self.runtime = tk.Label(frame, text='00:00', font="Arial 13")
     self.runtime.grid(row=1, column=3)
     
-    self.text_ids = [[0]*9 for _ in range(9)]
     
     self.draw_lines()
     self.board = helpers.generate_board()
@@ -69,11 +66,15 @@ class Sudoku:
   def kill_window(self):
     self.window.destroy()
     
-  def on_enter(self, event):
-    self.run_button['background'] = '#333333'
+  def on_enter(self, event, btn):
+    btn['background'] = '#333333'
 
-  def on_leave(self, event):
-    self.run_button['background'] = '#444444'
+  def on_leave(self, event, btn):
+    btn['background'] = '#444444'
+  
+  def button_hover(self, button):
+    button.bind("<Enter>", lambda event, btn=button: self.on_enter(event, btn))
+    button.bind("<Leave>", lambda event, btn=button: self.on_leave(event, btn))
     
   def easy(self):
     self.generate()
@@ -114,10 +115,7 @@ class Sudoku:
       while x < self.width:
         r, c = round((y-self.step_y/2)/self.step_y), round((x-self.step_x/2)/self.step_x)
         number = self.board[r][c] or ''
-        self.text_ids[r][c] = self.canvas.create_text(x, y,
-                                                      text=str(number),
-                                                      anchor=tk.CENTER,
-                                                      font="Arial 16")
+        self.text_ids[r][c] = self.canvas.create_text(x, y, text=str(number), **style.numbers)
         sleep(0.05)
         self.canvas.update()
         x += self.step_x
