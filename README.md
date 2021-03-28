@@ -1,4 +1,4 @@
-# Sudoku-Solver
+# Sudoku-Solver-Visualizer
 Visualize Sudoku-Solver program using recursion and backtracking algorithm.
 
 What the program can do:
