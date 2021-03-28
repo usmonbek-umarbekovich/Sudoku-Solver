@@ -126,7 +126,7 @@ class Sudoku:
           if helpers.is_valid(self.board, num, pos):
             self.board[row][col] = num
             self.canvas.itemconfigure(self.text_ids[row][col], text=str(num))
-            sleep(1 / self.speed.get() + 0.01)
+            sleep(1 / self.speed.get() + 0.08)
             self.canvas.update()
 
             if _recursive():
@@ -134,7 +134,7 @@ class Sudoku:
             
             self.board[row][col] = 0
             self.canvas.itemconfigure(self.text_ids[row][col], text='')
-            sleep(1 / self.speed.get() + 0.01)
+            sleep(1 / self.speed.get() + 0.08)
             self.canvas.update()
         return False
       _recursive()
@@ -143,7 +143,7 @@ class Sudoku:
       msg.showerror("Empty Box", "Please generate a board")
     
   def reset(self):
-    if not self.is_operating and helpers.is_empty(self.board):
+    if not(self.is_operating or helpers.is_empty(self.board)):
       self.is_operating = True
       self.board = [[0]*9 for _ in range(9)]
       for r in range(9):
