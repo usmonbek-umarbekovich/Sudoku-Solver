@@ -1,8 +1,9 @@
 import tkinter as tk
+
 from tkinter import messagebox as msg
 from . import style
 from . import helpers
-from time import sleep
+from time import sleep, perf_counter
 
 
 class Sudoku:
@@ -11,9 +12,23 @@ class Sudoku:
     self.window.title("Sudoku Solver")
     self.window.protocol("WM_DELETE_WINDOW", self.kill_window)
     self.window.geometry("550x610")
+    self.elapsed_time = 0
+    self.is_operating = True
+    
+    menubar = tk.Menu(self.window, cursor="hand2")
+    level = tk.Menu(menubar, tearoff=0)
+    level.add_command(label="Easy", command=self.easy)
+    level.add_command(label="Difficult", command=self.difficult)
+    menubar.add_cascade(label="Level", menu=level)
+    self.window.config(menu=menubar)
 
+    # canvas
     self.canvas = tk.Canvas(self.window, **style.canvas)
     self.canvas.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.YES)
+    self.canvas.update()
+    self.width = self.canvas.winfo_width()
+    self.height = self.canvas.winfo_height()
+    self.step_x, self.step_y = self.width/9, self.height/9
 
     frame = tk.Frame(self.window, bg="#f4f4f4")
     frame.pack(side=tk.TOP, expand=tk.YES)
@@ -39,25 +54,16 @@ class Sudoku:
     self.speed.grid(ipadx=80, row=1, column=0, columnspan=2)
     self.speed.set(50)
 
-    label = tk.Label(frame, text="Runtime:", font=("Arial", 13))
-    label.grid(row=1, column=2)
-
-    self.runtime = tk.Label(frame, text='n', font=("Arial", 13))
+    tk.Label(frame, text="Runtime:", font=("Arial", 13)).grid(row=1, column=2)
+    self.runtime = tk.Label(frame, text='00:00', font=("Arial", 13))
     self.runtime.grid(row=1, column=3)
     
     self.text_ids = [[0]*9 for _ in range(9)]
     
-    self.canvas.update()
-    self.width = self.canvas.winfo_width()
-    self.height = self.canvas.winfo_height()
-    self.step_x, self.step_y = self.width/9, self.height/9
-    
-    self.is_operating = True
     self.draw_lines()
-    
     self.board = helpers.generate_board()
     self.write_given_numbers()
-    
+
     self.window.mainloop()
 
   def kill_window(self):
@@ -68,6 +74,12 @@ class Sudoku:
 
   def on_leave(self, event):
     self.run_button['background'] = '#444444'
+    
+  def easy(self):
+    self.generate()
+    
+  def difficult(self):
+    self.generate(level="difficult")
     
   def draw_lines(self):
     self.is_operating = True 
@@ -114,8 +126,13 @@ class Sudoku:
     
   def solve(self):
     if not(self.is_operating or helpers.is_empty(self.board)):
+      start = perf_counter()
+      self.elapsed_time = 0
+      
       self.is_operating = True
       def _recursive():
+        self.elapsed_time = int(perf_counter() - start)
+        self.runtime['text'] = f'{self.elapsed_time//60:02d}:{self.elapsed_time%60:02d}'
         pos = helpers.find_empty(self.board)
         if not pos:
           return True
@@ -126,7 +143,7 @@ class Sudoku:
           if helpers.is_valid(self.board, num, pos):
             self.board[row][col] = num
             self.canvas.itemconfigure(self.text_ids[row][col], text=str(num))
-            sleep(1 / self.speed.get() + 0.08)
+            sleep(10 / self.speed.get())
             self.canvas.update()
 
             if _recursive():
@@ -134,7 +151,7 @@ class Sudoku:
             
             self.board[row][col] = 0
             self.canvas.itemconfigure(self.text_ids[row][col], text='')
-            sleep(1 / self.speed.get() + 0.08)
+            sleep(10 / self.speed.get())
             self.canvas.update()
         return False
       _recursive()
@@ -145,6 +162,8 @@ class Sudoku:
   def reset(self):
     if not(self.is_operating or helpers.is_empty(self.board)):
       self.is_operating = True
+      self.elapsed_time = 0
+      self.runtime['text'] = '00:00'
       self.board = [[0]*9 for _ in range(9)]
       for r in range(9):
         for c in range(9):
@@ -154,8 +173,8 @@ class Sudoku:
       self.is_operating = False
   
   
-  def generate(self):
+  def generate(self, *, level="easy"):
     if not self.is_operating:
       self.reset()
-      self.board = helpers.generate_board()
+      self.board = helpers.generate_board(level=level)
       self.write_given_numbers()
