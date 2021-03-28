@@ -1,5 +1,3 @@
-__all__ = ('board', 'solve')
-
 board = [
   [7, 8, 0, 4, 0, 0, 1, 2, 0],
   [6, 0, 0, 0, 7, 5, 0, 0, 9],
@@ -12,22 +10,7 @@ board = [
   [0, 4, 9, 2, 0, 6, 0, 0, 7]
 ]
 
-def solve(board):
-  pos = find_empty(board)
-  if not pos:
-    return True
-  else:
-    row, col = pos
-  
-  for num in range(1, 10):
-    if is_valid(board, num, pos):
-      board[row][col] = num
 
-      if solve(board):
-        return True
-      
-      board[row][col] = 0
-  return False
 
 
 def is_valid(board, num, pos):
