@@ -1,6 +1,6 @@
 import tkinter as tk
 
-run_button = {
+btn = {
   'bg': "#444444",
   'fg': "#ffffff",
   'font': ("Arial", 13),
