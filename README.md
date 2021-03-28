@@ -11,9 +11,9 @@ ul li:before {
 
 What the program can do:
 <ul>
-* It can generate random sudoku puzzles
-* It can solve them pretty fast
-* You can see the process with different speeds
+  <li>It can generate random sudoku puzzles</li>
+  <li>It can solve them pretty fast</li>
+  <li>You can see the process with different speeds</li>
 </ul>
 
 How to use the application:
