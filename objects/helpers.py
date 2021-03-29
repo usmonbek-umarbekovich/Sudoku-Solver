@@ -4,9 +4,11 @@ import random
 def generate_board(*, level="easy"):
   gen_range = (level == "easy") and (35, 45) or (50, 60)
   board = [[0]*9 for _ in range(9)]
-  board[0] = list(range(1, 10))
-  random.shuffle(board[0])
-  complete(board)
+  shuffled = list(range(1, 10))
+  random.shuffle(shuffled)
+  board[0] = shuffled
+  random.shuffle(shuffled)
+  complete(board, shuffled)
   
   count = random.randint(*gen_range)
   for _ in range(count):
@@ -16,17 +18,17 @@ def generate_board(*, level="easy"):
   return board
 
 
-def complete(board):
+def complete(board, shuffled):
   pos = find_empty(board)
   if not pos:
     return True
 
   row, col = pos
-  for num in range(1, 10):
+  for num in shuffled:
     if is_valid(board, num, pos):
       board[row][col] = num
       
-      if complete(board):
+      if complete(board, shuffled):
         return True
 
       board[row][col] = 0
