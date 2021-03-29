@@ -86,7 +86,6 @@ class Sudoku:
     self.generate()
     
   def draw_lines(self):
-    self.is_operating = True 
     # draw x lines
     y = self.step_y
     while y <= self.height:
@@ -108,10 +107,8 @@ class Sudoku:
         self.canvas.update()
         y += 3.5
       x += self.step_x
-    self.is_operating = False
   
   def write_given_numbers(self):
-    self.is_operating = True
     y = self.step_y/2
     while y < self.height:
       x = self.step_x/2
@@ -177,5 +174,6 @@ class Sudoku:
   def generate(self):
     if not self.is_operating:
       self.reset()
+      self.is_operating = True
       self.board = helpers.generate_board(level=self.level)
       self.write_given_numbers()
