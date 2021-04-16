@@ -1,5 +1,5 @@
 # Sudoku-Solver-Visualizer
-Visualize Sudoku-Solver program using recursion and backtracking algorithm.
+Generate random sudoku puzzles and visualize the solving process.
 
 What the program can do:
 * It can generate random sudoku puzzles
